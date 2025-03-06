@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     genBtn.onclick = async () => {
         try {
-            const response = await fetch(baseURL, {
+            const response = await fetch(baseURL + '/prompt', {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

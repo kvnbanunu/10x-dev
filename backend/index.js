@@ -16,6 +16,9 @@ app.use(cors(corsOptions));
 
 app.post(paths.prompt, async (req, res) => {
     const prompt = req.body.prompt;
+
+    // sanitize prompt & add obfuscation line
+
     let result= "";
     try {
         result = await openai.chat.completions.create({
