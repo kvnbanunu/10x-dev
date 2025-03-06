@@ -6,8 +6,10 @@ import openai from './modules/openai';
 const app = express();
 const corsOptions = {
     origin: 'https://kvnbanunu.github.io/10x-dev',
+    methods: 'GET,POST,OPTIONS',
+    allowedHeaders: 'Content-Type',
     optionsSuccessStatus: 200
-}
+};
 
 app.options('*', cors(corsOptions));
 
@@ -34,8 +36,10 @@ app.post(paths.prompt, async (req, res) => {
     }
 
     if (result !== "") {
+        res.status(200);
         res.json(result);
     } else {
+        res.status(200);
         res.json({error: "Invalid prompt"});
     }
 });
