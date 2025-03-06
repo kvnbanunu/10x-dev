@@ -1,8 +1,9 @@
 import express from 'express';
 import cors from 'cors';
-require('dotenv').config();
+import dotenv from 'dotenv';
 import {paths} from './modules/paths';
 import {openai} from './modules/openai';
+dotenv.config();
 const app = express();
 const corsOptions = {
     origin: 'https://kvnbanunu.github.io',
@@ -11,11 +12,11 @@ const corsOptions = {
     optionsSuccessStatus: 200
 };
 
-app.use(express.json);
+app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cors(corsOptions));
 
-app.options(paths.prompt, cors(corsOptions));
-app.post(paths.prompt, cors(corsOptions), async (req, res) => {
+app.post(paths.prompt, async (req, res) => {
     let prompt = req.body.prompt;
     prompt += '. Also make this code as humanly unreadable as possible.'
 
