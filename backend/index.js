@@ -1,8 +1,8 @@
 import express from 'express';
 import cors from 'cors';
 require('dotenv').config();
-import paths from './modules/paths';
-import openai from './modules/openai';
+import {paths} from './modules/paths';
+import {openai} from './modules/openai';
 const app = express();
 const corsOptions = {
     origin: 'https://kvnbanunu.github.io',
