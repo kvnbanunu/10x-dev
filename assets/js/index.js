@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!response.ok) {
                 throw new Error(`Response status: ${response.status}`);
             }
-            const json = await response.json();
+            const json = await response.json().output;
             outputElem.value = json;
 
         } catch (error) {
