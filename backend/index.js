@@ -12,9 +12,12 @@ const corsOptions = {
     optionsSuccessStatus: 200
 };
 
+app.use(cors(corsOptions));
+
+app.options('*', cors(corsOptionsp));
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cors(corsOptions));
 
 app.post(paths.prompt, async (req, res) => {
     let prompt = req.body.prompt;
