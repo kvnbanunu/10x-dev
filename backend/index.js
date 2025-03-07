@@ -35,17 +35,11 @@ app.post(paths.prompt, async (req, res) => {
                 { role: "user", content: body.prompt },
             ],
         });
-        return result.choices[0].message.content;
+        res.status(200);
+        res.json({output: result.choices[0].message.content});
     } catch (error) {
         console.error("Error with OpenAI API:", error);
-    }
-
-    if (result !== "") {
-        res.status(200);
-        res.json(result);
-    } else {
-        res.status(200);
-        res.json({error: "Invalid prompt"});
+        res.status(500).json({ error: 'Internal Server Error' });
     }
 });
 
