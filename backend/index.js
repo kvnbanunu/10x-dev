@@ -8,7 +8,8 @@ const app = express();
 const corsOptions = {
     origin: 'https://kvnbanunu.github.io',
     methods: ['GET', 'POST', 'OPTIONS'],
-    allowedHeaders: 'Content-Type',
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials: true,
     optionsSuccessStatus: 200
 };
 
