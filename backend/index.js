@@ -6,10 +6,9 @@ import {openai} from './modules/openai';
 dotenv.config();
 const app = express();
 const corsOptions = {
-    origin: 'https://kvnbanunu.github.io',
+    origin: '*',
     methods: ['GET', 'POST', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
-    credentials: true,
+    allowedHeaders: 'Content-Type',
     optionsSuccessStatus: 200
 };
 

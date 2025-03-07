@@ -9,7 +9,6 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             const response = await fetch(baseURL + '/prompt', {
                 method: 'POST',
-                credentials: 'include',
                 headers: {
                     'Content-Type': 'application/json',
                 },
