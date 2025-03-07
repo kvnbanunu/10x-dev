@@ -8,9 +8,10 @@ document.addEventListener('DOMContentLoaded', () => {
     genBtn.onclick = async () => {
         try {
             const response = await fetch(baseURL + '/prompt', {
-                method: "POST",
+                method: 'POST',
+                credentials: 'include',
                 headers: {
-                    "Content-Type": "application/json",
+                    'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
                     prompt: promptElem.value
@@ -31,3 +32,4 @@ document.addEventListener('DOMContentLoaded', () => {
         outputElem.value = '';
     }
 });
+
