@@ -155,7 +155,7 @@ const resetPasswordRequest = [validateRequest(validationSchemas.resetRequest), a
         const resetToken = uuidv4();
         const resetTokenExpiry = Math.floor(Date.now() / 1000) + 3600;
         await userQueries.setResetToken(email, resetToken, resetTokenExpiry);
-        const resetUrl = `${process.env.FRONTEND_URL}/reset-password?token=${resetToken}`;
+        const resetUrl = `${process.env.FRONTEND_URL}/10x-dev/reset-password?token=${resetToken}`;
 
         await transporter.sendMail({
             from: process.env.SMTP_FROM,
