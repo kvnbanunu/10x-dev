@@ -132,7 +132,7 @@ export const cleanupExpiredSessions = () => {
 };
 
 // request queries
-export const createRequest = (userId, prompt) => {
+export const createRequest = (userId, prompt, response) => {
     return insert(
         'INSERT INTO requests (user_id, prompt, response) VALUES (?, ?, ?)',
         [userId, prompt, response]
