@@ -22,21 +22,21 @@ app.use(reqLogger);
 
 // public routes
 app.post('/api/getNonce', handlers.getNonce);
-app.post('/api/register', handlers.register);
-app.post('/api/login', handlers.login);
-app.post('/api/resetPasswordRequest', handlers.resetPasswordRequest);
-app.post('/api/resetPassword', handlers.resetPassword);
+app.post('/api/register', ...handlers.register);
+app.post('/api/login', ...handlers.login);
+app.post('/api/resetPasswordRequest', ...handlers.resetPasswordRequest);
+app.post('/api/resetPassword', ...handlers.resetPassword);
 
 // protected routes
 app.use('/api/protected', authMiddleware);
 app.get('/api/protected/userInfo', handlers.userInfo);
-app.post('/api/protected/chat', handlers.chat);
+app.post('/api/protected/chat', ...handlers.chat);
 app.post('/api/protected/logout', handlers.logout);
 
 // admin routes
 app.get('/api/protected/admin/database', handlers.adminDatabase);
-app.put('/api/protected/admin/update', handlers.adminUpdate);
-app.delete('/api/protected/admin/delete', handlers.adminDelete);
+app.put('/api/protected/admin/update', ...handlers.adminUpdate);
+app.delete('/api/protected/admin/delete', ...handlers.adminDelete);
 
 app.use(errorHandler);
 
