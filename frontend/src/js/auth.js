@@ -41,24 +41,24 @@ export const handleLogout = async () => {
 
 export const saveUserData = (userData) => {
   sessionStorage.setItem('user', JSON.stringify(userData.user));
-  sessionStorage.setItem('requestCount', userData.requestCount.toString());
+  sessionStorage.setItem('reqCount', userData.reqCount?.toString() || '0');
 };
 
 export const getUserData = () => {
   const user = JSON.parse(sessionStorage.getItem('user') || 'null');
-  const requestCount = parseInt(sessionStorage.getItem('requestCount') || '0', 10);
+  const reqCount = parseInt(sessionStorage.getItem('reqCount') || '0', 10);
   
-  return { user, requestCount };
+  return { user, reqCount };
 };
 
 export const updateRequestCount = (count) => {
-  sessionStorage.setItem('requestCount', count.toString());
+  sessionStorage.setItem('reqCount', count.toString());
   return count;
 };
 
 export const clearUserData = () => {
   sessionStorage.removeItem('user');
-  sessionStorage.removeItem('requestCount');
+  sessionStorage.removeItem('reqCount');
 };
 
 export const validatePassword = (password, confirmPassword) => {

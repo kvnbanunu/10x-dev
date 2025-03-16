@@ -71,7 +71,7 @@ export const initializeDatabase = async () => {
             }
 
             if (!users.find(user => user.email === process.env.TEST_ADMIN_EMAIL)) {
-                const password = process.env.TEST_USER_PASSWORD;
+                const password = process.env.TEST_ADMIN_PASSWORD;
                 const hashed = await bcrypt.hash(password, 10);
 
                 await execute(

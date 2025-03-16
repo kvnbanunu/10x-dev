@@ -232,7 +232,7 @@ const chat = [validateRequest(validationSchemas.chat), async (req, res) => {
         const code = await generateObfuscatedCode(program, language);
         await requestQueries.createRequest(req.user.id, `${program} in ${language}`, code);
         const count = await requestQueries.getRequestCountByUser(req.user.id);
-        return res.json({ code, count});
+        return res.json({ code, count });
     } catch (error) {
         console.error('Chat error:', error);
         return res.status(500).json({ error: errMsg.codeFail });

@@ -25,7 +25,7 @@ const init = async () => {
     if (userData) {
       saveUserData(userData);
       displayUserInfo(userData);
-      checkWarningThreshold(userData.requestCount);
+      checkWarningThreshold(userData.reqCount);
     }
   } catch (error) {
     console.error('Initialization error:', error);
@@ -34,7 +34,7 @@ const init = async () => {
 
 const displayUserInfo = (userData) => {
   usernameElement.textContent = userData.user.username;
-  requestCountElement.textContent = userData.requestCount;
+  requestCountElement.textContent = userData.reqCount;
   
   // admins only
   if (userData.user.isAdmin) {
@@ -89,7 +89,7 @@ if (generateForm) {
       
       codeOutput.style.display = 'block';
       
-      const newCount = updateRequestCount(response.data.requestCount);
+      const newCount = updateRequestCount(response.data.count);
       requestCountElement.textContent = newCount;
       
       checkWarningThreshold(newCount);
