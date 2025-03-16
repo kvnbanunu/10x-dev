@@ -32,7 +32,7 @@ const getNonce = async (req, res) => {
     }
 };
 
-const register = validateRequest(validationSchemas.register, async (req, res) => {
+const register = [validateRequest(validationSchemas.register), async (req, res) => {
     try {
         const { email, username, password, nonce } = req.body;
 
@@ -66,9 +66,9 @@ const register = validateRequest(validationSchemas.register, async (req, res) =>
         console.error('Register error:', error);
         return res.status(500).json({ error: errMsg.registerFail });
     }
-});
+}];
 
-const login = validateRequest(validationSchemas.login, async (req, res) => {
+const login = [validateRequest(validationSchemas.login), async (req, res) => {
     try {
         const { email, password, nonce } = req.body;
         // check if email registered
@@ -96,7 +96,7 @@ const login = validateRequest(validationSchemas.login, async (req, res) => {
         }
 
         await nonceQueries.deleteNonce(nonce);
-        await userQueries.deleteUserSessions(user.id);
+        await sessionQueries.deleteUserSessions(user.id);
 
         //generate token
         const token = jwt.sign(
@@ -128,7 +128,7 @@ const login = validateRequest(validationSchemas.login, async (req, res) => {
         console.error('Login error:', error);
         return res.status(500).json({ error: errMsg.loginFail });
     }
-});
+}];
 
 const logout = async (req, res) => {
     try {
@@ -144,7 +144,7 @@ const logout = async (req, res) => {
     }
 };
 
-const resetPasswordRequest = validateRequest(validationSchemas.resetRequest, async (req, res) => {
+const resetPasswordRequest = [validateRequest(validationSchemas.resetRequest), async (req, res) => {
     try {
         const { email } = req.body;
         const user = await userQueries.getUserByEmail(email);
@@ -169,9 +169,9 @@ const resetPasswordRequest = validateRequest(validationSchemas.resetRequest, asy
         console.error('Reset password request error:', error);
         return res.status(500).json({ error: errMsg.passwordResetFail });
     }
-});
+}];
 
-const resetPassword = validateRequest(validationSchemas.resetPassword, async (req, res) => {
+const resetPassword = [validateRequest(validationSchemas.resetPassword), async (req, res) => {
     try {
         const { token, password, nonce } = req.body;
         const user = await genericQueries.getRow('SELECT * FROM users WHERE reset_token = ?', [token]);
@@ -205,7 +205,7 @@ const resetPassword = validateRequest(validationSchemas.resetPassword, async (re
         console.error('Reset password error:', error);
         return res.status(500).json({ error: errMsg.passwordResetFail });
     }
-});
+}];
 
 const userInfo = async (req, res) => {
     try {
@@ -225,7 +225,7 @@ const userInfo = async (req, res) => {
     }
 };
 
-const chat = validateRequest(validationSchemas.chat, async (req, res) => {
+const chat = [validateRequest(validationSchemas.chat), async (req, res) => {
     try {
         const { program, language } = req.body;
 
@@ -237,7 +237,7 @@ const chat = validateRequest(validationSchemas.chat, async (req, res) => {
         console.error('Chat error:', error);
         return res.status(500).json({ error: errMsg.codeFail });
     }
-});
+}];
 
 const adminDatabase = async (req, res) => {
     try {
@@ -253,7 +253,7 @@ const adminDatabase = async (req, res) => {
     }
 };
 
-const adminUpdate = validateRequest(validationSchemas.adminUpdate, async (req, res) => {
+const adminUpdate = [validateRequest(validationSchemas.adminUpdate), async (req, res) => {
     try {
         if (!req.user.isAdmin) {
             return res.status(403).json({ error: errMsg.notAdmin });
@@ -265,9 +265,9 @@ const adminUpdate = validateRequest(validationSchemas.adminUpdate, async (req, r
         console.error('Admin update error:', error);
         return res.status(500).json({ error: errMsg.adminUpdate });
     }
-});
+}];
 
-const adminDelete = validateRequest(validationSchemas.adminDelete, async (req, res) => {
+const adminDelete = [validateRequest(validationSchemas.adminDelete), async (req, res) => {
     try {
         if (!req.user.isAdmin) {
             return res.status(403).json({ error: errMsg.notAdmin });
@@ -284,7 +284,7 @@ const adminDelete = validateRequest(validationSchemas.adminDelete, async (req, r
         console.error('Admin delete error:', error);
         return res.status(500).json({ error: errMsg.adminDelete });
     }
-});
+}];
 
 export default {
     getNonce,

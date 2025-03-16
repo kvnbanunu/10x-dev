@@ -80,7 +80,7 @@ export const updateUserPassword = (userId, password) => {
 
 export const resetUserPassword = (password, userId) => {
     return update(
-        'UPDATE users SET password = ?, reset_token = NULL, reset_token_expiry = NULL WHERE',
+        'UPDATE users SET password = ?, reset_token = NULL, reset_token_expiry = NULL WHERE id = ?',
         [password, userId]
     );
 };
@@ -152,7 +152,7 @@ export const getRequestCountByUser = async (userId) => {
 };
 
 export const getAllRequests = () => {
-    return executeQuery('SELECT * FROM requests ORDER BY timestamp DESC');
+    return execute('SELECT * FROM requests ORDER BY timestamp DESC');
 };
 
 // admin queries
