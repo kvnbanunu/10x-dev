@@ -2,7 +2,7 @@ import jwt from 'jsonwebtoken';
 import Joi from 'joi';
 import dotenv from 'dotenv/config';
 import { getSessionByToken, getUserById } from './sql.js';
-import { errMessage } from './lang/en.js';
+import { errMsg } from './lang/en.js';
 
 // auth for protected routes
 export const authMiddleware = async (req, res, next) => {
@@ -10,31 +10,31 @@ export const authMiddleware = async (req, res, next) => {
         // get token
         const token = req.cookies.token;
         if (!token) {
-            return res.status(401).json({ error: errMessage.authMiss });
+            return res.status(401).json({ error: errMsg.authMiss });
         }
 
         // check token
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
         if (!decoded || !decoded.userId) {
-            return res.status(401).json({ error: errMessage.invToken });
+            return res.status(401).json({ error: errMsg.invToken });
         }
 
         // check session exists
         const session = await getSessionByToken(token);
         if (!session) {
-            return res.status(401).json({ error: errMessage.invSesh });
+            return res.status(401).json({ error: errMsg.invSesh });
         }
 
         // check expired
         const now = Math.floor(Date.now() / 1000);
         if (session.expires_at < now) {
-            return res.status(401).json({ error: errMessage.invSesh })
+            return res.status(401).json({ error: errMsg.invSesh })
         }
 
         // get user
-        const user = await getuserById(decoded.userId);
+        const user = await getUserById(decoded.userId);
         if (!user) {
-            return res.status(401).json({ error: errMessage.userNotFound });
+            return res.status(401).json({ error: errMsg.userNotFound });
         }
 
         // add user details to the request
@@ -47,13 +47,13 @@ export const authMiddleware = async (req, res, next) => {
 
         // Check if this route is admin and if user is allowed
         if (req.path.startsWith('/admin') && !req.user.isAdmin) {
-            return res.status(403).json({ error: errMessage.notAdmin });
+            return res.status(403).json({ error: errMsg.notAdmin });
         };
 
         next();
     } catch (error) {
         console.error('Auth middleware error:', error);
-        return res.status(401).json({ error: errMessage.authFail });
+        return res.status(401).json({ error: errMsg.authFail });
     }
 };
 
@@ -65,7 +65,7 @@ export const reqLogger = (req, res, next) => {
 export const errorHandler = (err, req, res, next) => {
     console.error('Server error:', err);
     res.status(500).json({
-        error: errMessage.serverFail,
+        error: errMsg.serverFail,
         message: process.env.NODE_ENV === 'development' ? err.message : undefined
     });
 };

@@ -54,7 +54,7 @@ export const deleteRows = (query, params = []) => {
             } else {
                 resolve(this.changes);
             }
-        });
+});
     });
 };
 
@@ -76,6 +76,13 @@ export const createUser = (email, username, password, isAdmin = 0) => {
 
 export const updateUserPassword = (userId, password) => {
     return update('UPDATE users SET password = ? WHERE id = ?', [password, userId]);
+};
+
+export const resetUserPassword = (password, userId) => {
+    return update(
+        'UPDATE users SET password = ?, reset_token = NULL, reset_token_expiry = NULL WHERE',
+        [password, userId]
+    );
 };
 
 export const setResetToken = (email, token, expiry) => {
@@ -163,4 +170,48 @@ export const updateUser = (userId, updates) => {
 
 export const deleteUser = (userId) => {
     return deleteRows('DELETE FROM users WHERE id = ?', [userId]);
+};
+
+export const genericQueries = {
+    execute,
+    getRow,
+    insert,
+    update,
+    deleteRows,
+};
+
+export const userQueries = {
+    getUserByEmail,
+    getUserById,
+    createUser,
+    updateUserPassword,
+    resetUserPassword,
+    setResetToken,
+};
+
+export const nonceQueries = {
+    createNonce,
+    getNonce,
+    deleteNonce,
+    cleanupExpiredNonces,
+};
+
+export const sessionQueries = {
+    createSession,
+    getSessionByToken,
+    deleteSession,
+    deleteUserSessions,
+    cleanupExpiredSessions,
+};
+
+export const requestQueries = {
+    createRequest,
+    getRequestCountByUser,
+    getAllRequests,
+};
+
+export const adminQueries = {
+    getAllUsers,
+    updateUser,
+    deleteUser,
 };
