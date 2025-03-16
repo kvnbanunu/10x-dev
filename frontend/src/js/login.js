@@ -1,5 +1,6 @@
 import { authService } from './api.js';
 import { saveUserData, showError, showSuccess, hideMessage } from './auth.js';
+import { redirect } from './redirect.js';
 
 const loginForm = document.getElementById('login-form');
 const loginButton = document.getElementById('login-button');
@@ -28,7 +29,7 @@ if (loginForm) {
       saveUserData(response.data);
       
       // redirect to home
-      window.location.href = '/index.html';
+      redirect('/index.html');
     } catch (error) {
       const errorText = error.response?.data?.error || 'Login failed';
       showError(errorText);

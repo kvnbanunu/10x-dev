@@ -1,6 +1,7 @@
 import { checkAuth, handleLogout, saveUserData, updateRequestCount, showError } from './auth.js';
 import { chatService } from './api.js';
 import hljs from 'highlight.js';
+import { redirect } from './redirect.js';
 
 const usernameElement = document.getElementById('username');
 const requestCountElement = document.getElementById('request-count');
@@ -57,7 +58,7 @@ if (logoutButton) {
 
 if (adminButton) {
   adminButton.addEventListener('click', () => {
-    window.location.href = '/admin.html';
+    redirect('/admin.html');
   });
 }
 
@@ -85,6 +86,7 @@ if (generateForm) {
       codeDisplay.textContent = response.data.code;
       
       // this package highlights the syntax
+      // Does not work atm
       hljs.highlightElement(codeDisplay);
       
       codeOutput.style.display = 'block';

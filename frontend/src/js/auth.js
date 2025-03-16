@@ -1,4 +1,5 @@
 import { authService } from './api.js';
+import { redirect } from './redirect.js';
 
 // checks if user is logged in
 export const checkAuth = async () => {
@@ -8,7 +9,7 @@ export const checkAuth = async () => {
   } catch (error) {
     // redirect to login
     if (error.response && error.response.status === 401) {
-      window.location.href = '/login.html';
+      redirect('/login.html');
     }
     return null;
   }
@@ -19,13 +20,13 @@ export const checkAdmin = async () => {
     const userData = await checkAuth();
     
     if (!userData || !userData.user.isAdmin) {
-      window.location.href = '/index.html';
+      redirect('/index.html');
       return false;
     }
     
     return userData;
   } catch (error) {
-    window.location.href = '/login.html';
+    redirect('/login.html');
     return false;
   }
 };
@@ -33,7 +34,7 @@ export const checkAdmin = async () => {
 export const handleLogout = async () => {
   try {
     await authService.logout();
-    window.location.href = '/login.html';
+    redirect('/login.html');
   } catch (error) {
     console.error('Logout failed:', error);
   }
