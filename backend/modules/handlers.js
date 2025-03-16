@@ -4,8 +4,8 @@ import crypto from 'crypto';
 import CryptoJS from 'crypto-js';
 import { v4 as uuidv4 } from 'uuid';
 import nodemailer from 'nodemailer';
-import dotenv from 'dotenv/config';
-import { genericQueries, userQueries, nonceQueries, sessionQueries, requestQueries, adminQueries } from './sql';
+import 'dotenv/config';
+import { genericQueries, userQueries, nonceQueries, sessionQueries, requestQueries, adminQueries } from './sql.js';
 import { validationSchemas, validateRequest } from './middleware.js';
 import { generateObfuscatedCode } from './openai.js';
 import { errMsg, successMsg, passwordMsg } from './lang/en.js';
@@ -55,8 +55,8 @@ const register = validateRequest(validationSchemas.register, async (req, res) =>
 
         // decrypt then hash the pass
         const decryptedPass = CryptoJS.AES.decrypt(password, nonce).toString(CryptoJS.enc.Utf8);
-        const saltRounds = process.env.SALT_ROUNDS;
-        const hashedPass = bcrypt.hash(decryptedPass, saltRounds);
+        const saltRounds = parseInt(process.env.SALT_ROUNDS);
+        const hashedPass = await bcrypt.hash(decryptedPass, saltRounds);
 
         const userId = await userQueries.createUser(email, username, hashedPass);
 
@@ -196,7 +196,7 @@ const resetPassword = validateRequest(validationSchemas.resetPassword, async (re
         }
 
         const decryptedPass = CryptoJS.AES.decrypt(password, nonce).toString(CryptoJS.enc.Utf8);
-        const hashedPass = bcrypt.hash(decryptedPass, process.env.SALT_ROUNDS);
+        const hashedPass = await bcrypt.hash(decryptedPass, parseInt(process.env.SALT_ROUNDS));
 
         await userQueries.resetUserPassword(hashedPass, user.id);
         await nonceQueries.deleteNonce(nonce);

@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
 import Joi from 'joi';
-import dotenv from 'dotenv/config';
+import 'dotenv/config';
 import { getSessionByToken, getUserById } from './sql.js';
 import { errMsg } from './lang/en.js';
 

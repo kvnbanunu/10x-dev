@@ -1,7 +1,7 @@
 import sqlite3 from 'sqlite3';
 import bcrypt from 'bcrypt';
 import { execute } from './sql.js';
-import dotenv from 'dotenv/config';
+import 'dotenv/config';
 
 const db = new sqlite3.Database('./database.sqlite', (err) => {
     if (err) {
@@ -60,12 +60,12 @@ export const initializeDatabase = async () => {
         const users = await execute('SELECT * FROM users WHERE email IN (?, ?)', [process.env.TEST_USER_EMAIL, process.env.TEST_ADMIN_EMAIL]);
 
         if (users.length < 2) {
-            const saltRounds = process.env.SALTROUNDS;
+            const saltRounds = parseInt(process.env.SALT_ROUNDS);
 
             if (!users.find(user => user.email === process.env.TEST_USER_EMAIL)) {
                 const password = process.env.TEST_USER_PASSWORD;
-                const firstHash = bcrypt.hash(password.toString(), saltRounds);
-                const secondHash = bcrypt.hash(firstHash, saltRounds);
+                const firstHash = await bcrypt.hash(password, saltRounds);
+                const secondHash = await bcrypt.hash(firstHash, saltRounds);
 
                 await execute(
                     'INSERT INTO users (email, username, password, is_admin) VALUES (?, ?, ?, ?)',
@@ -75,8 +75,8 @@ export const initializeDatabase = async () => {
 
             if (!users.find(user => user.email === process.env.TEST_ADMIN_EMAIL)) {
                 const password = process.env.TEST_USER_PASSWORD;
-                const firstHash = bcrypt.hash(password.toString(), saltRounds);
-                const secondHash = bcrypt.hash(firstHash, saltRounds);
+                const firstHash = await bcrypt.hash(password, saltRounds);
+                const secondHash = await bcrypt.hash(firstHash, saltRounds);
 
                 await execute(
                     'INSERT INTO users (email, username, password, is_admin) VALUES (?, ?, ?, ?)',

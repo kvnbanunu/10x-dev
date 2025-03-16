@@ -1,7 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
-import dotenv from 'dotenv/config';
+import 'dotenv/config';
 import { initializeDatabase } from './modules/database.js';
 import { authMiddleware, errorHandler, reqLogger } from './modules/middleware.js';
 import handlers from './modules/handlers.js';
