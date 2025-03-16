@@ -2,11 +2,14 @@ import { defineConfig } from 'vite';
 import tailwindcss from '@tailwindcss/vite';
 
 export default defineConfig({
+  plugins: [
+    tailwindcss(),
+  ],
   server: {
     port: 3000
   },
+  base: '/10x-dev/',
   build: {
-    outDir: '../docs',
     assetsDir: 'assets',
     rollupOptions: {
       input: {
@@ -19,7 +22,4 @@ export default defineConfig({
       }
     }
   },
-  plugins: [
-    tailwindcss(),
-  ],
 });

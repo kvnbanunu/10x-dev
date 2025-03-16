@@ -1,7 +1,7 @@
 import axios from 'axios';
 import CryptoJS from 'crypto-js';
 
-const API_URL = import.meta.env.VITE_API_URL;
+const API_URL = 'https://4537api.banunu.dev/10x-dev/api';
 
 const apiClient = axios.create({
   baseURL: API_URL,
