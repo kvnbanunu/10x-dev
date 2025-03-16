@@ -64,7 +64,7 @@ export const initializeDatabase = async () => {
 
             if (!users.find(user => user.email === process.env.TEST_USER_EMAIL)) {
                 const password = process.env.TEST_USER_PASSWORD;
-                const firstHash = bcrypt.hash(password, saltRounds);
+                const firstHash = bcrypt.hash(password.toString(), saltRounds);
                 const secondHash = bcrypt.hash(firstHash, saltRounds);
 
                 await execute(
@@ -75,7 +75,7 @@ export const initializeDatabase = async () => {
 
             if (!users.find(user => user.email === process.env.TEST_ADMIN_EMAIL)) {
                 const password = process.env.TEST_USER_PASSWORD;
-                const firstHash = bcrypt.hash(password, saltRounds);
+                const firstHash = bcrypt.hash(password.toString(), saltRounds);
                 const secondHash = bcrypt.hash(firstHash, saltRounds);
 
                 await execute(

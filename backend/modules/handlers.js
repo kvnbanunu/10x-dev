@@ -5,7 +5,7 @@ import CryptoJS from 'crypto-js';
 import { v4 as uuidv4 } from 'uuid';
 import nodemailer from 'nodemailer';
 import dotenv from 'dotenv/config';
-import { genericQueries, userQueries, nonceQueries, sessionQueries, requestQueries, adminQueries, getUserByEmail, deleteNonce, deleteUserSessions } from './sql';
+import { genericQueries, userQueries, nonceQueries, sessionQueries, requestQueries, adminQueries } from './sql';
 import { validationSchemas, validateRequest } from './middleware.js';
 import { generateObfuscatedCode } from './openai.js';
 import { errMsg, successMsg, passwordMsg } from './lang/en.js';
@@ -62,7 +62,7 @@ const register = validateRequest(validationSchemas.register, async (req, res) =>
 
         await nonceQueries.deleteNonce(nonce);
 
-        return res.status(201).json({ message: })
+        return res.status(201).json({ message: successMsg.userCreated });
     } catch (error) {
         console.error('Register error:', error);
         return res.status(500).json({ error: errMsg.registerFail });
@@ -218,7 +218,7 @@ const userInfo = async (req, res) => {
                 email: req.user.email,
                 isAdmin: req.user.isAdmin
             },
-            requestCount
+            reqCount
         });
     } catch (error) {
         console.error('User info error:', error);
