@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken';
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 import crypto from 'crypto';
 import CryptoJS from 'crypto-js';
 import { v4 as uuidv4 } from 'uuid';
@@ -25,7 +25,7 @@ const getNonce = async (req, res) => {
         const nonce = crypto.randomBytes(16).toString('hex');
         const expiryTime = Math.floor(Date.now() / 1000) + 300;
         await nonceQueries.createNonce(nonce, expiryTime);
-        return res.json({ nonce });
+        return res.json({ nonce: nonce });
     } catch (error) {
         console.error('getNonce error:', error);
         return res.status(500).json({ error: errMsg.nonceFail });
@@ -55,8 +55,7 @@ const register = validateRequest(validationSchemas.register, async (req, res) =>
 
         // decrypt then hash the pass
         const decryptedPass = CryptoJS.AES.decrypt(password, nonce).toString(CryptoJS.enc.Utf8);
-        const saltRounds = parseInt(process.env.SALT_ROUNDS);
-        const hashedPass = await bcrypt.hash(decryptedPass, saltRounds);
+        const hashedPass = await bcrypt.hash(decryptedPass, 10);
 
         const userId = await userQueries.createUser(email, username, hashedPass);
 
@@ -196,7 +195,7 @@ const resetPassword = validateRequest(validationSchemas.resetPassword, async (re
         }
 
         const decryptedPass = CryptoJS.AES.decrypt(password, nonce).toString(CryptoJS.enc.Utf8);
-        const hashedPass = await bcrypt.hash(decryptedPass, parseInt(process.env.SALT_ROUNDS));
+        const hashedPass = await bcrypt.hash(decryptedPass, 10);
 
         await userQueries.resetUserPassword(hashedPass, user.id);
         await nonceQueries.deleteNonce(nonce);

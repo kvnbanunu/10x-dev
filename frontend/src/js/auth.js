@@ -1,0 +1,102 @@
+import { authService } from './api.js';
+
+// checks if user is logged in
+export const checkAuth = async () => {
+  try {
+    const response = await authService.getUserInfo();
+    return response.data;
+  } catch (error) {
+    // redirect to login
+    if (error.response && error.response.status === 401) {
+      window.location.href = '/login.html';
+    }
+    return null;
+  }
+};
+
+export const checkAdmin = async () => {
+  try {
+    const userData = await checkAuth();
+    
+    if (!userData || !userData.user.isAdmin) {
+      window.location.href = '/index.html';
+      return false;
+    }
+    
+    return userData;
+  } catch (error) {
+    window.location.href = '/login.html';
+    return false;
+  }
+};
+
+export const handleLogout = async () => {
+  try {
+    await authService.logout();
+    window.location.href = '/login.html';
+  } catch (error) {
+    console.error('Logout failed:', error);
+  }
+};
+
+export const saveUserData = (userData) => {
+  sessionStorage.setItem('user', JSON.stringify(userData.user));
+  sessionStorage.setItem('requestCount', userData.requestCount.toString());
+};
+
+export const getUserData = () => {
+  const user = JSON.parse(sessionStorage.getItem('user') || 'null');
+  const requestCount = parseInt(sessionStorage.getItem('requestCount') || '0', 10);
+  
+  return { user, requestCount };
+};
+
+export const updateRequestCount = (count) => {
+  sessionStorage.setItem('requestCount', count.toString());
+  return count;
+};
+
+export const clearUserData = () => {
+  sessionStorage.removeItem('user');
+  sessionStorage.removeItem('requestCount');
+};
+
+export const validatePassword = (password, confirmPassword) => {
+  if (password.length < 3) {
+    return 'Password must be at least 3 characters long';
+  }
+  
+  if (password !== confirmPassword) {
+    return 'Passwords do not match';
+  }
+  
+  return null;
+};
+
+export const showError = (message, elementId = 'error-message') => {
+  const errorElement = document.getElementById(elementId);
+  if (errorElement) {
+    errorElement.textContent = message;
+    errorElement.style.display = 'block';
+    
+    // Scroll to error message
+    errorElement.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+};
+
+export const showSuccess = (message, elementId = 'success-message') => {
+  const successElement = document.getElementById(elementId);
+  if (successElement) {
+    successElement.textContent = message;
+    successElement.style.display = 'block';
+    
+    successElement.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+};
+
+export const hideMessage = (elementId) => {
+  const element = document.getElementById(elementId);
+  if (element) {
+    element.style.display = 'none';
+  }
+};
