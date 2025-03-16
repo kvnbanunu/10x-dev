@@ -1,9 +1,7 @@
 import sqlite3 from 'sqlite3';
 import bcrypt from 'bcrypt';
 import { execute } from './sql.js';
-import dotenv from 'dotenv';
-
-dotenv.config();
+import dotenv from 'dotenv/config';
 
 const db = new sqlite3.Database('./database.sqlite', (err) => {
     if (err) {
