@@ -10,7 +10,6 @@ export default defineConfig({
   },
   base: '/10x-dev/',
   build: {
-    outDir: '../docs',
     assetsDir: 'assets',
     rollupOptions: {
       input: {
