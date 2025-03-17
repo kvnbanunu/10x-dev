@@ -9,6 +9,7 @@ export const checkAuth = async () => {
   } catch (error) {
     // redirect to login
     if (error.response && error.response.status === 401) {
+      console.log(error.response.error);
       redirect('/login.html');
     }
     return null;
