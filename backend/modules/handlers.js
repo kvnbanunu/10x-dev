@@ -217,7 +217,7 @@ const userInfo = async (req, res) => {
                 email: req.user.email,
                 isAdmin: req.user.isAdmin
             },
-            reqCount
+            reqCount: reqCount
         });
     } catch (error) {
         console.error('User info error:', error);
