@@ -1,5 +1,6 @@
 import { authService } from './api.js';
 import { validatePassword, showError, hideMessage } from './auth.js';
+import { redirect } from './redirect.js';
 
 const registerForm = document.getElementById('register-form');
 const registerButton = document.getElementById('register-button');
@@ -27,7 +28,7 @@ if (registerForm) {
     try {
       await authService.register(email, username, password);
       
-      window.location.href = '/login.html?registered=true';
+      redirect('/login.html?registered=true');
     } catch (error) {
       const errorText = error.response?.data?.error || 'Registration failed';
       showError(errorText);
