@@ -4,15 +4,15 @@ import { redirect } from './redirect.js';
 // checks if user is logged in
 export const checkAuth = async () => {
   try {
-    const userData = getUserData();
-    if (!userData) {
+    const { userData } = getUserData();
+    if (!userData.user) {
       throw new Error('User not logged in');
     }
     const response = await authService.getUserInfo(userData.user.id);
     return response.data;
   } catch (error) {
     // redirect to login
-      redirect('/login.html');
+    redirect('/login.html');
     return null;
   }
 };
