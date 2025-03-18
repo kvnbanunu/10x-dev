@@ -109,6 +109,7 @@ const login = [validateRequest(validationSchemas.login), async (req, res) => {
         await sessionQueries.createSession(user.id, token, expiryTime);
 
         res.cookie('token', token, {
+            path: '/10x-dev/',
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
             maxAge: 24 * 60 * 60 * 1000,
@@ -208,15 +209,13 @@ const resetPassword = [validateRequest(validationSchemas.resetPassword), async (
 
 const userInfo = async (req, res) => {
     try {
-        const { id } = req.body;
-        const user = await userQueries.getUserById(id);
-        const reqCount = await requestQueries.getRequestCountByUser(id);
+        const reqCount = await requestQueries.getRequestCountByUser(req.user.id);
         return res.json({
             user: {
-                id: user.id,
-                username: user.username,
-                email: user.email,
-                isAdmin: user.is_admin
+                id: req.user.id,
+                username: req.user.username,
+                email: req.user.email,
+                isAdmin: req.user.isAdmin
             },
             reqCount: reqCount
         });

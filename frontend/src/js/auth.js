@@ -8,7 +8,7 @@ export const checkAuth = async () => {
     if (!userData.user) {
       throw new Error('User not logged in');
     }
-    const response = await authService.getUserInfo(userData.user.id);
+    const response = await authService.getUserInfo();
     return response.data;
   } catch (error) {
     // redirect to login

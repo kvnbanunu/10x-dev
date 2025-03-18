@@ -62,7 +62,7 @@ export const authService = {
   },
   
   async getUserInfo(id) {
-    return apiClient.get('/protected/userInfo', { id });
+    return apiClient.get('/protected/userInfo');
   },
 };
 
