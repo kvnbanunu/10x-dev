@@ -15,7 +15,7 @@ export const checkAuth = async () => {
   } catch (error) {
     // redirect to login
     if (error.response && error.response.status === 401) {
-      console.error("checkAuth failed:", error);
+      console.error("checkAuth failed:", error.response);
     }
     redirect('/login.html');
     return null;
