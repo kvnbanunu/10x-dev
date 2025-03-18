@@ -209,13 +209,15 @@ const resetPassword = [validateRequest(validationSchemas.resetPassword), async (
 
 const userInfo = async (req, res) => {
     try {
-        const reqCount = await requestQueries.getRequestCountByUser(req.user.id);
+        const { id } = req.body;
+        const user = await userQueries.getUserById(id);
+        const reqCount = await requestQueries.getRequestCountByUser(id);
         return res.json({
             user: {
-                id: req.user.id,
-                username: req.user.username,
-                email: req.user.email,
-                isAdmin: req.user.isAdmin
+                id: user.id,
+                username: user.username,
+                email: user.email,
+                isAdmin: user.is_admin
             },
             reqCount: reqCount
         });

@@ -61,8 +61,8 @@ export const authService = {
     });
   },
   
-  async getUserInfo() {
-    return apiClient.get('/protected/userInfo');
+  async getUserInfo(id) {
+    return apiClient.get('/protected/userInfo', { id });
   },
 };
 
