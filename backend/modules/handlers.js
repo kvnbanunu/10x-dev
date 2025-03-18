@@ -113,6 +113,7 @@ const login = [validateRequest(validationSchemas.login), async (req, res) => {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
             maxAge: 24 * 60 * 60 * 1000,
+            signed: true
         });
 
         return res.json({
@@ -132,7 +133,7 @@ const login = [validateRequest(validationSchemas.login), async (req, res) => {
 
 const logout = async (req, res) => {
     try {
-        const token = req.cookies.token;
+        const token = req.signedCookies.token;
         if(token) {
             await sessionQueries.deleteSession(token);
             res.clearCookie('token');
