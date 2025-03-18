@@ -8,13 +8,14 @@ export const checkAuth = async () => {
     if (!userData) {
       throw new Error('User not logged in');
     }
+    console.log(userData.user.id);
     const response = await authService.getUserInfo(userData.user.id);
+    console.log(response.data);
     return response.data;
   } catch (error) {
     // redirect to login
     if (error.response && error.response.status === 401) {
-        console.log(error.response.data);
-        console.log(JSON.stringify(error.response.data));
+      console.error("checkAuth failed:", error);
     }
     redirect('/login.html');
     return null;
