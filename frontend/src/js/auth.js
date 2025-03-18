@@ -13,8 +13,10 @@ export const checkAuth = async () => {
   } catch (error) {
     // redirect to login
     if (error.response && error.response.status === 401) {
-      redirect('/login.html');
+        console.log(error.response.data);
+        console.log(JSON.stringify(error.response.data));
     }
+    redirect('/login.html');
     return null;
   }
 };
