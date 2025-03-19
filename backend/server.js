@@ -3,9 +3,9 @@ import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import 'dotenv/config';
 
-import { initDB } from './modules/database';
-import { authMiddleware, errorHandler, reqLogger, validateRequest, validationSchemas } from './modules/middleware';
-import { handlers } from './modules/handlers';
+import { initDB } from './modules/database.js';
+import { authMiddleware, errorHandler, reqLogger, validateRequest, validationSchemas } from './modules/middleware.js';
+import { handlers } from './modules/handlers.js';
 
 await initDB();
 

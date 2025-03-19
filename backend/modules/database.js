@@ -47,7 +47,7 @@ export const initDB = async () => {
       )
     `);
 
-    const users = await fetchAll('SELECT * FROM users WHERE email IN (?, ?)',
+    const users = await sql.fetchAll('SELECT * FROM users WHERE email IN (?, ?)',
       [process.env.TEST_USER_EMAIL, process.env.TEST_ADMIN_EMAIL]
     );
 
@@ -68,6 +68,6 @@ export const initDB = async () => {
 
     console.log('Database init success');
   } catch (err) {
-    console.err('Database init error:', err);
+    console.error('Database init error:', err);
   }
 };

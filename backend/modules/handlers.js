@@ -6,7 +6,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 import sql from './sql.js';
 import { generateCode } from './openai.js';
-import { errMsg, successMsg } from './lang/en';
+import { errMsg, successMsg } from './lang/en.js';
 
 const transporter = nodemailer.createTransport({
     host: process.env.SMTP_HOST,
@@ -66,6 +66,8 @@ export const handlers = {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
         maxAge: 24 * 60 * 60 * 1000,
+        sameSite: 'None',
+        partitioned: true,
         signed: true
       });
 
