@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import Link from 'next/link';
 import { toast } from 'react-hot-toast';
-import * as api from '@/lib/api';
+import { resetPasswordRequest } from '@/lib/api';
 
 export default function ResetRequestForm() {
   const [loading, setLoading] = useState(false);
@@ -35,7 +35,7 @@ export default function ResetRequestForm() {
   const onSubmit = async (data) => {
     try {
       setLoading(true);
-      await api.resetPasswordRequest(data.email);
+      await resetPasswordRequest(data.email);
       setSubmitted(true);
       toast.success('If your email is registered, you will receive a password reset link');
     } catch (error) {

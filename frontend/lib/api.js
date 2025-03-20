@@ -24,7 +24,7 @@ export const logout = async () => {
 };
 
 export const resetPasswordRequest = async (email) => {
-  return api.post('/resetPasswordRequest', { data: { email } });
+  return api.post('/resetPasswordRequest', { email: email });
 };
 
 export const resetPasswordHandle = async (token, password) => {
