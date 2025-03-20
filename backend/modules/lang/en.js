@@ -32,3 +32,8 @@ export const errMsg = {
   session: 'Expired or invalid session',
   resetToken: 'Expired or invalid password reset token',
 };
+
+export const passwordMsg = {
+  subject: '10x-dev Password Reset Link',
+  click: 'Click the following link to reset your password: ',
+};

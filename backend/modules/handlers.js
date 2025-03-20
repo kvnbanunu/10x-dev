@@ -6,7 +6,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 import sql from './sql.js';
 import { generateCode } from './openai.js';
-import { errMsg, successMsg } from './lang/en.js';
+import { errMsg, successMsg, passwordMsg } from './lang/en.js';
 
 const transporter = nodemailer.createTransport({
     host: process.env.SMTP_HOST,
@@ -109,7 +109,7 @@ export const handlers = {
       const token = uuidv4();
       const tokenExpiry = Math.floor(Date.now() / 1000) + 3600 // 1hr
       await sql.setResetToken(email, token, tokenExpiry);
-      const resetUrl = `${process.env.FRONTEND_URL}/10x-dev/reset-password?token=${token}`;
+      const resetUrl = `${process.env.CLIENT_URL}/10x-dev/reset-password?token=${token}`;
 
       await transporter.sendMail({
         from: process.env.SMTP_FROM,
