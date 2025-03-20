@@ -115,7 +115,7 @@ export default function RegisterForm() {
             <p className="mt-1 text-sm text-red-500">{errors.password.message}</p>
           )}
         </div>
-
+{/*
         <div className="mb-6">
           <label htmlFor="confirmPassword" className="block mb-2 text-sm font-medium">
             {LABELS.confirmPass}
@@ -133,7 +133,7 @@ export default function RegisterForm() {
             <p className="mt-1 text-sm text-red-500">{errors.confirmPassword.message}</p>
           )}
         </div>
-
+*/}
         <button
           type="submit"
           className="btn btn-primary w-full"
