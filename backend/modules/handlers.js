@@ -68,7 +68,6 @@ export const handlers = {
         maxAge: 24 * 60 * 60 * 1000,
         sameSite: 'None',
         partitioned: true,
-        signed: true
       });
 
       return res.status(200).json({
@@ -88,7 +87,7 @@ export const handlers = {
 
   async logout(req, res) {
     try {
-      const token = req.signedCookies.token;
+      const token = req.cookies.token;
       if(token) {
         await sql.deleteSession(token);
         res.clearCookie('token');

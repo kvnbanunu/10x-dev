@@ -7,7 +7,7 @@ import { errMsg } from './lang/en.js';
 
 export const authMiddleware = async (req, res, next) => {
   try {
-    const token = req.signedCookies.token;
+    const token = req.cookies.token;
     if (!token) {
       return res.status(401).json({ error: errMsg.auth });
     }
