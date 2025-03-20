@@ -45,10 +45,11 @@ export default function ResetPasswordForm() {
   }
 
   useEffect(() => {
-    // Get token from URL query params
-    const tokenParam = searchParams.get('token');
-    if (tokenParam) {
-      setToken(tokenParam);
+    if (searchParams) {
+      const tokenParam = searchParams.get('token');
+      if (tokenParam) {
+        setToken(tokenParam);
+      }
     }
   }, [searchParams]);
 
