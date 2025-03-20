@@ -2,16 +2,17 @@ import express from 'express';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import 'dotenv/config';
-import { initializeDatabase } from './modules/database.js';
-import { authMiddleware, errorHandler, reqLogger } from './modules/middleware.js';
-import handlers from './modules/handlers.js';
 
-await initializeDatabase();
+import { initDB } from './modules/database.js';
+import { authMiddleware, errorHandler, reqLogger, validateRequest, validationSchemas } from './modules/middleware.js';
+import { handlers } from './modules/handlers.js';
+
+await initDB();
 
 const app = express();
 
 app.use(cors({
-    origin: [process.env.FRONTEND_URL, process.env.LOCAL_HOST],
+    origin: [process.env.CLIENT_URL, process.env.LOCAL_URL],
     credentials: true,
     optionsSuccessStatus: 200
 }));
@@ -20,26 +21,25 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(reqLogger);
 
-// public routes
-app.post('/api/getNonce', handlers.getNonce);
-app.post('/api/register', ...handlers.register);
-app.post('/api/login', ...handlers.login);
-app.post('/api/resetPasswordRequest', ...handlers.resetPasswordRequest);
-app.post('/api/resetPassword', ...handlers.resetPassword);
+app.post('/register', validateRequest(validationSchemas.register), handlers.register);
+app.post('/login', validateRequest(validationSchemas.login), handlers.login);
+app.post('/resetPasswordRequest', validateRequest(validationSchemas.resetRequest), handlers.resetPasswordRequest);
+app.post('/resetPasswordHandle', validateRequest(validationSchemas.resetPassword), handlers.resetPasswordHandle);
 
-// protected routes
-app.use('/api/protected', authMiddleware);
-app.get('/api/protected/userInfo', handlers.userInfo);
-app.post('/api/protected/chat', ...handlers.chat);
-app.post('/api/protected/logout', handlers.logout);
+app.use('/protected', authMiddleware);
+app.get('/protected/userInfo', handlers.userInfo);
+app.post('/protected/chat', validateRequest(validationSchemas.chat), handlers.chat);
+app.post('/protected/logout', handlers.logout);
 
-// admin routes
-app.get('/api/protected/admin/database', handlers.adminDatabase);
-app.put('/api/protected/admin/update', ...handlers.adminUpdate);
-app.delete('/api/protected/admin/delete', ...handlers.adminDelete);
+app.use('/admin', authMiddleware);
+app.get('/admin/database', handlers.adminDatabase);
+app.put('/admin/update', validateRequest(validationSchemas.adminUpdate), handlers.adminUpdate);
+app.delete('/admin/delete', validateRequest(validationSchemas.adminDelete), handlers.adminDelete);
+
+app.get('*', handlers.notFound);
 
 app.use(errorHandler);
 
 app.listen(process.env.PORT, () => {
-    console.log(`Server running on port ${process.env.PORT}`);
+    console.log(`Server running on port: ${process.env.PORT}`);
 });

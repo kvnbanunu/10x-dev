@@ -1,217 +1,152 @@
-import db from './database.js';
+import { db } from './database.js';
 
-// execute sql query
-export const execute = (query, params = []) => {
-    return new Promise((resolve, reject) => {
-        db.all(query, params, (err, rows) => {
-            if (err) {
-                reject(err);
-            } else {
-                resolve(rows);
-            }
-        });
+// generic
+const execute = async (sql, params = []) => {
+  if (params && params.length > 0) {
+    return new Promise((res, rej) => {
+      db.run(sql, params, (err) => {
+        if (err) rej(err);
+        res();
+      });
     });
-};
+  }
+  return new Promise((res, rej) => {
+    db.exec(sql, (err) => {
+      if (err) rej(err);
+      res();
+    })
+  })
+}
 
-// get single row from db
-export const getRow = async (query, params = []) => {
-    const rows = await execute(query, params);
-    return rows.length > 0 ? rows[0] : null;
-};
-
-// insert row and return ID
-export const insert = (query, params = []) => {
-    return new Promise((resolve, reject) => {
-        db.run(query, params, function (err) {
-            if (err) {
-                reject(err);
-            } else {
-                resolve(this.lastID);
-            }
-        });
+const fetchAll = async (sql, params = []) => {
+  return new Promise((resolve, reject) => {
+    db.all(sql, params, (err, rows) => {
+      if (err) reject(err);
+      resolve(rows);
     });
+  });
 };
 
-// update rows and return #rows affected
-export const update = (query, params = []) => {
-    return new Promise((resolve, reject) => {
-        db.run(query, params, function (err) {
-            if (err) {
-                reject(err);
-            } else {
-                resolve(this.changes);
-            }
-        });
+const fetchFirst = async (sql, params = []) => {
+  return new Promise((resolve, reject) => {
+    db.get(sql, params, (err, row) => {
+      if (err) reject(err);
+      resolve(row);
     });
+  });
 };
 
-// delete rows and return #rows affected
-export const deleteRows = (query, params = []) => {
-    return new Promise((resolve, reject) => {
-        db.run(query, params, function (err) {
-            if (err) {
-                reject(err);
-            } else {
-                resolve(this.changes);
-            }
-});
-    });
+const getUserByEmail = (email) => {
+  return fetchFirst('SELECT * FROM users WHERE email = ?', [email]);
 };
 
-// User queries
-export const getUserByEmail = (email) => {
-    return getRow('SELECT * FROM users WHERE email = ?', [email]);
+const getUserById = (id) => {
+  return fetchFirst('SELECT * FROM users WHERE id = ?', [id]);
 };
 
-export const getUserById = (id) => {
-    return getRow('SELECT * FROM users WHERE id = ?', [id]);
+const createUser = (email, username, password, is_admin = 0) => {
+  return execute(
+    'INSERT INTO users (email, username, password, is_admin) VALUES (?, ?, ?, ?)',
+    [email, username, password, is_admin]
+  );
 };
 
-export const createUser = (email, username, password, isAdmin = 0) => {
-    return insert(
-        'INSERT INTO users (email, username, password, is_admin) VALUES (?, ?, ?, ?)',
-        [email, username, password, isAdmin]
-    );
+const resetPassword = (id, password) => {
+  return execute(
+    'UPDATE users SET password = ?, reset_token = NULL, reset_token_expiry = NULL WHERE id = ?',
+    [password, id]
+  );
 };
 
-export const updateUserPassword = (userId, password) => {
-    return update('UPDATE users SET password = ? WHERE id = ?', [password, userId]);
+const setResetToken = (email, token, expiry) => {
+  return execute(
+    'UPDATE users SET reset_token = ?, reset_token_expiry = ? WHERE email = ?',
+    [token, expiry, email]
+  );
 };
 
-export const resetUserPassword = (password, userId) => {
-    return update(
-        'UPDATE users SET password = ?, reset_token = NULL, reset_token_expiry = NULL WHERE id = ?',
-        [password, userId]
-    );
+const getUserByResetToken = (token) => {
+  return fetchFirst('SELECT * FROM users WHERE reset_token = ?', [token]);
 };
 
-export const setResetToken = (email, token, expiry) => {
-    return update(
-        'UPDATE users SET reset_token = ?, reset_token_expiry = ? WHERE email = ?',
-        [token, expiry, email]
-    );
+const createSession = (id, token, expiry) => {
+  return execute(
+    'INSERT INTO sessions (user_id, token, expires_at) VALUES (?, ?, ?)',
+    [id, token, expiry]
+  );
 };
 
-// Nonce queries
-export const createNonce = (nonce, expiryTime) => {
-    return insert(
-        'INSERT INTO nonces (nonce, expires_at) VALUES (?, ?)',
-        [nonce, expiryTime]
-    );
+const getSessionByToken = (token) => {
+    return fetchFirst('SELECT * FROM sessions WHERE token = ?', [token]);
 };
 
-export const getNonce = (nonce) => {
-    return getRow('SELECT * FROM nonces WHERE nonce = ?', [nonce]);
+const deleteSession = (token) => {
+    return execute('DELETE FROM sessions WHERE token = ?', [token]);
 };
 
-export const deleteNonce = (nonce) => {
-    return deleteRows('DELETE FROM nonces WHERE nonce = ?', [nonce]);
+const deleteUserSessions = (userId) => {
+    return execute('DELETE FROM sessions WHERE user_id = ?', [userId]);
 };
 
-export const cleanupExpiredNonces = () => {
+const cleanupExpiredSessions = () => {
     const now = Math.floor(Date.now() / 1000);
-    return deleteRows('DELETE FROM nonces WHERE expires_at < ?', [now]);
+    return execute('DELETE FROM sessions WHERE expires_at < ?', [now]);
 };
 
-// Session queries
-export const createSession = (userId, token, expiryTime) => {
-    return insert(
-        'INSERT INTO sessions (user_id, token, expires_at) VALUES (?, ?, ?)',
-        [userId, token, expiryTime]
-    );
-};
-
-export const getSessionByToken = (token) => {
-    return getRow('SELECT * FROM sessions WHERE token = ?', [token]);
-};
-
-export const deleteSession = (token) => {
-    return deleteRows('DELETE FROM sessions WHERE token = ?', [token]);
-};
-
-export const deleteUserSessions = (userId) => {
-    return deleteRows('DELETE FROM sessions WHERE user_id = ?', [userId]);
-};
-
-export const cleanupExpiredSessions = () => {
-    const now = Math.floor(Date.now() / 1000);
-    return deleteRows('DELETE FROM sessions WHERE expires_at < ?', [now]);
-};
-
-// request queries
-export const createRequest = (userId, prompt, response) => {
-    return insert(
+const createRequest = (userId, prompt, response) => {
+    return execute(
         'INSERT INTO requests (user_id, prompt, response) VALUES (?, ?, ?)',
         [userId, prompt, response]
     );
 };
 
-export const getRequestCountByUser = async (userId) => {
-    const result = await getRow('SELECT COUNT(*) as count FROM requests WHERE user_id = ?', [userId]);
+const getRequestCountByUser = async (userId) => {
+    const result = await fetchFirst('SELECT COUNT(*) as count FROM requests WHERE user_id = ?', [userId]);
     return result ? result.count : 0;
 };
 
-export const getAllRequests = () => {
-    return execute('SELECT * FROM requests ORDER BY timestamp DESC');
-};
+const getDatabase = async () => {
+  const users = await fetchAll(`
+SELECT users.id, users.email, users.username, users.is_admin, COUNT(requests.id) AS request_count FROM users
+LEFT JOIN requests ON users.id = requests.user_id
+GROUP BY users.id
+`);
+  const requests = await fetchAll('SELECT * FROM requests ORDER BY timestamp DESC');
+  return { users, requests };
+}
 
-// admin queries
-export const getAllUsers = () => {
-    return execute('SELECT id, email, username, is_admin FROM users');
-};
-
-export const updateUser = (userId, updates) => {
-    const { email, username, isAdmin } = updates;
-    return update(
+const updateUser = (id, updates) => {
+    const { email, username, is_admin } = updates;
+    return execute(
         'UPDATE users SET email = ?, username = ?, is_admin = ? WHERE id = ?',
-        [email, username, isAdmin, userId]
+        [email, username, is_admin, id]
     );
 };
 
-export const deleteUser = (userId) => {
-    return deleteRows('DELETE FROM users WHERE id = ?', [userId]);
+const deleteUser = async (id) => {
+  await execute('DELETE FROM users WHERE id = ?', [id]);
+  await execute('DELETE FROM requests WHERE user_id = ?', [id]);
+  await execute('DELETE FROM sessions WHERE user_id = ?', [id]);
 };
 
-export const genericQueries = {
-    execute,
-    getRow,
-    insert,
-    update,
-    deleteRows,
-};
-
-export const userQueries = {
-    getUserByEmail,
-    getUserById,
-    createUser,
-    updateUserPassword,
-    resetUserPassword,
-    setResetToken,
-};
-
-export const nonceQueries = {
-    createNonce,
-    getNonce,
-    deleteNonce,
-    cleanupExpiredNonces,
-};
-
-export const sessionQueries = {
-    createSession,
-    getSessionByToken,
-    deleteSession,
-    deleteUserSessions,
-    cleanupExpiredSessions,
-};
-
-export const requestQueries = {
-    createRequest,
-    getRequestCountByUser,
-    getAllRequests,
-};
-
-export const adminQueries = {
-    getAllUsers,
-    updateUser,
-    deleteUser,
-};
+export default {
+  execute,
+  fetchAll,
+  fetchFirst,
+  getUserByEmail,
+  getUserById,
+  createUser,
+  resetPassword,
+  setResetToken,
+  getUserByResetToken,
+  createSession,
+  getSessionByToken,
+  deleteSession,
+  deleteUserSessions,
+  cleanupExpiredSessions,
+  createRequest,
+  getRequestCountByUser,
+  getDatabase,
+  updateUser,
+  deleteUser
+}

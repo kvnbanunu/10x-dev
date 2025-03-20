@@ -5,7 +5,7 @@ const openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY
 });
 
-export const generateObfuscatedCode = async (program, language) => {
+export const generateCode = async (program, language) => {
     try {
         const response = await openai.chat.completions.create({
             model: 'gpt-4o-mini',

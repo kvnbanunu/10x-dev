@@ -2,13 +2,9 @@
   "name": "10x-dev-api",
   "version": "1.0.0",
   "description": "",
-  "homepage": "https://github.com/kvnbanunu/10x-dev#readme",
-  "bugs": {
-    "url": "https://github.com/kvnbanunu/10x-dev/issues"
-  },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/kvnbanunu/10x-dev.git"
+    "url": "https://github.com/kvnbanunu/10x-dev/backend"
   },
   "license": "ISC",
   "author": "kvnbanunu",
@@ -21,7 +17,6 @@
     "bcryptjs": "^3.0.2",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
-    "crypto-js": "^4.2.0",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "joi": "^17.13.3",
@@ -30,8 +25,5 @@
     "openai": "^4.87.3",
     "sqlite3": "^5.1.7",
     "uuid": "^11.1.0"
-  },
-  "devDependencies": {
-    "nodemon": "^3.1.9"
   }
 }
