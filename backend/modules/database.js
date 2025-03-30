@@ -47,6 +47,17 @@ export const initDB = async () => {
       )
     `);
 
+    await sql.execute(`
+      CREATE TABLE IF NOT EXISTS api_requests (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id INTEGER NOT NULL,
+        method TEXT NOT NULL,
+        endpoint TEXT NOT NULL,
+        timestamp INTEGER DEFAULT (strftime('%s', 'now')),
+        FOREIGN KEY (user_id) REFERENCES users (id)
+      )
+    `);
+
     const users = await sql.fetchAll('SELECT * FROM users WHERE email IN (?, ?)',
       [process.env.TEST_USER_EMAIL, process.env.TEST_ADMIN_EMAIL]
     );

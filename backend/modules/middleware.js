@@ -109,3 +109,23 @@ export const validateRequest = (schema) => {
         next();
     };
 };
+
+export const apiTrackingMiddleware = async (req, res, next) => {
+  try {
+    if (req.user && req.user.id) {
+      const skipTracking = [
+        '/api-docs',
+        '/favicon.ico'
+      ];
+
+      const path = req.path;
+      if (!skipTracking.some(prefix => path.startsWith(prefix))) {
+        await sq.recordApiRequest(req.user.id, req.method, req.path);
+      }
+    }
+    next();
+  } catch (error) {
+    console.error('API tracking middleware error:', error);
+    next();
+  }
+};

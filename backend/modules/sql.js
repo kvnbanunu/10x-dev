@@ -113,7 +113,7 @@ GROUP BY users.id
 `);
   const requests = await fetchAll('SELECT * FROM requests ORDER BY timestamp DESC');
   return { users, requests };
-}
+};
 
 const updateUser = (id, updates) => {
     const { email, username, is_admin } = updates;
@@ -127,6 +127,36 @@ const deleteUser = async (id) => {
   await execute('DELETE FROM users WHERE id = ?', [id]);
   await execute('DELETE FROM requests WHERE user_id = ?', [id]);
   await execute('DELETE FROM sessions WHERE user_id = ?', [id]);
+};
+
+const recordApiRequest = (id, method, endpoint) => {
+  return execute(
+    'INSERT INTO api_requests (user_id, method, endpoint) VALUES (?, ?, ?)',
+    [id, method, endpoint]
+  );
+};
+
+const getTotalApiRequestsByUser = async (id) => {
+  const res = await fetchFirst('SELECT COUNT(*) as count FROM api_requests WHERE user_id = ?', [id]);
+  return res ? res.count : 0;
+};
+
+const getApiRequestsSummary = async () => {
+  return fetchAll(`
+    SELECT method, endpoint, COUNT(*) as request_count
+    FROM api_requests
+    GROUP BY method, endpoint
+    ORDER BY request_count DESC
+  `);
+};
+
+const getUserApiUsageSummary = async () => {
+  return fetchAll(`
+    SELECT users.id, users.username, COUNT(api_requests.id) as api_request_count
+    FROM users
+    LEFT JOIN api_requests ON users.id = api_requests.user_id
+    GROUP BY users.id
+  `);
 };
 
 export default {
@@ -148,5 +178,9 @@ export default {
   getRequestCountByUser,
   getDatabase,
   updateUser,
-  deleteUser
+  deleteUser,
+  recordApiRequest,
+  getTotalApiRequestsByUser,
+  getApiRequestsSummary,
+  getUserApiUsageSummary
 }

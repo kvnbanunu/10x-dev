@@ -5,10 +5,12 @@ import { toast } from 'react-hot-toast';
 import * as api from '@/lib/api';
 import UsersTable from './UsersTable';
 import RequestsTable from './RequestsTable';
+import ApiUsageTable from './ApiUsageTable';
 
 export default function AdminPanel() {
   const [users, setUsers] = useState([]);
   const [requests, setRequests] = useState([]);
+  const [apiUsage, setApiUsage] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -19,6 +21,7 @@ export default function AdminPanel() {
         const { data } = await api.getDatabase();
         setUsers(data.users || []);
         setRequests(data.requests || []);
+        setApiUsage(data.apiUsage || []);
       } catch (err) {
         setError('Failed to load data');
         toast.error('Failed to load admin data');
@@ -69,6 +72,8 @@ export default function AdminPanel() {
         onUserUpdated={handleUserUpdated} 
         onUserDeleted={handleUserDeleted} 
       />
+      
+      <ApiUsageTable apiUsage={apiUsage} />
       
       <RequestsTable requests={requests} users={users} />
     </div>

@@ -4,7 +4,7 @@ import cookieParser from 'cookie-parser';
 import 'dotenv/config';
 
 import { initDB } from './modules/database.js';
-import { authMiddleware, errorHandler, reqLogger, validateRequest, validationSchemas } from './modules/middleware.js';
+import { authMiddleware, errorHandler, reqLogger, validateRequest, validationSchemas, apiTrackingMiddleware } from './modules/middleware.js';
 import { handlers } from './modules/handlers.js';
 import { setupSwagger } from './modules/swagger.js';
 
@@ -52,11 +52,13 @@ app.post('/resetPasswordRequest', validateRequest(validationSchemas.resetRequest
 app.post('/resetPasswordHandle', validateRequest(validationSchemas.resetPassword), handlers.resetPasswordHandle);
 
 app.use('/protected', authMiddleware);
+app.use('/protected', apiTrackingMiddleware);
 app.get('/protected/userInfo', handlers.userInfo);
 app.post('/protected/chat', validateRequest(validationSchemas.chat), handlers.chat);
 app.post('/protected/logout', handlers.logout);
 
 app.use('/admin', authMiddleware);
+app.use('/admin', apiTrackingMiddleware);
 app.get('/admin/database', handlers.adminDatabase);
 
 // for some reason swagger wont display the put request within admin.js

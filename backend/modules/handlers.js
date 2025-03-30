@@ -183,8 +183,21 @@ export const handlers = {
       if (!req.user.is_admin) {
         return res.status(403).json({ error: errMsg.admin });
       }
-      const { users, requests } = await sql.getDatabase();
-      return res.json({ users, requests });
+//      const { users, requests } = await sql.getDatabase();
+      
+      const users = await sql.fetchAll(`
+        SELECT users.id, users.email, users.username, users.is_admin, COUNT(DISTINCT requests.id) AS request_count, COUNT(DISTINCT api_requests.id) AS api_request_count
+        FROM users
+        LEFT JOIN requests ON users.id = requests.user_id
+        LEFT JOIN api_requests ON users.id = api_requests.user_id
+        GROUP BY users.id
+      `);
+
+      const requests = await sql.fetchAll('SELECT * FROM requests ORDER BY timestampt DESC');
+
+      const apiUsage = await sql.getApiRequestsSummary();
+
+      return res.json({ users, requests, apiUsage });
     } catch (error) {
       console.error('Admin database error:', error);
       return res.status(500).json({ error: errMsg.handlerAdminDatabase });
