@@ -58,6 +58,15 @@ app.post('/protected/logout', handlers.logout);
 
 app.use('/admin', authMiddleware);
 app.get('/admin/database', handlers.adminDatabase);
+
+/**
+ * @swagger
+ * /admin/update:
+ *   put:
+ *     summary: Update a user (server.js documentation)
+ *     tags: [Admin]
+ *     description: Server-level documentation for admin update endpoint
+ */
 app.put('/admin/update', validateRequest(validationSchemas.adminUpdate), handlers.adminUpdate);
 app.delete('/admin/delete', validateRequest(validationSchemas.adminDelete), handlers.adminDelete);
 
