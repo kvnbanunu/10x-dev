@@ -84,6 +84,7 @@
  * /admin/update:
  *   put:
  *     summary: Update a user
+ *     description: Update user details including email, username, and admin status. Requires admin privileges.
  *     tags: [Admin]
  *     security:
  *       - cookieAuth: []

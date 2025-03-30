@@ -28,10 +28,19 @@ export default function CodeDisplay({ code, language }) {
     return null;
   }
 
+  // function to removed the ticks
+  const cleanCode = (code) => {
+    let cleaned = code;
+    cleaned = cleaned.replace(/^```[\w-]*\s*\n/m, '');
+    cleaned = cleaned.replace(/\n```\s*$/m, '');
+    return cleaned.trim();
+  }
+
   const syntaxLanguage = languageMap[language] || 'javascript';
+  const processedCode = cleanCode(code);
 
   const copyToClipboard = () => {
-    navigator.clipboard.writeText(code)
+    navigator.clipboard.writeText(processedCode)
       .then(() => {
         setCopied(true);
         toast.success('Code copied to clipboard!');
@@ -65,7 +74,7 @@ export default function CodeDisplay({ code, language }) {
             overflow: 'auto'
           }}
         >
-          {code}
+          {processedCode}
         </SyntaxHighlighter>
       </div>
     </div>

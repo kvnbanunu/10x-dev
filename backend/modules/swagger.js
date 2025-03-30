@@ -67,7 +67,12 @@ const options = {
       }
     }
   },
-  apis: ['./modules/swagger-docs/*.js', './server.js']
+  apis: [
+    './modules/swagger-docs/*.js',
+    './server.js',
+    './modules/handlers.js',
+    './modules/middleware.js'
+  ]
 };
 
 const specs = swaggerJsdoc(options);
