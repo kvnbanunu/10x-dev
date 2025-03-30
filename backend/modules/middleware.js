@@ -120,7 +120,7 @@ export const apiTrackingMiddleware = async (req, res, next) => {
 
       const path = req.path;
       if (!skipTracking.some(prefix => path.startsWith(prefix))) {
-        await sq.recordApiRequest(req.user.id, req.method, req.path);
+        await sql.recordApiRequest(req.user.id, req.method, req.path);
       }
     }
     next();
