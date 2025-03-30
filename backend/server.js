@@ -116,22 +116,10 @@ app.get('/admin/database', handlers.adminDatabase);
  *               $ref: '#/components/schemas/Error'
  *       401:
  *         description: Not authenticated
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Error'
  *       403:
  *         description: Not authorized (admin only)
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Error'
  *       500:
  *         description: Server error
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Error'
  */
 app.put('/admin/update', validateRequest(validationSchemas.adminUpdate), handlers.adminUpdate);
 app.delete('/admin/delete', validateRequest(validationSchemas.adminDelete), handlers.adminDelete);
