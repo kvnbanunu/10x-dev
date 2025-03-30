@@ -68,9 +68,9 @@ const options = {
     }
   },
   apis: [
-    './modules/swagger-docs/admin.js',
     './modules/swagger-docs/auth.js',
     './modules/swagger-docs/user.js',
+    './modules/swagger-docs/admin.js',
     './server.js',
   ]
 };
