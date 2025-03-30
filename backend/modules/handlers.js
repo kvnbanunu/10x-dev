@@ -193,7 +193,7 @@ export const handlers = {
         GROUP BY users.id
       `);
 
-      const requests = await sql.fetchAll('SELECT * FROM requests ORDER BY timestampt DESC');
+      const requests = await sql.fetchAll('SELECT * FROM requests ORDER BY timestamp DESC');
 
       const apiUsage = await sql.getApiRequestsSummary();
 
