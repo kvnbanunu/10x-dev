@@ -32,14 +32,46 @@ const options = {
           name: 'token'
         }
       },
+      schemas: {
+        User: {
+          type: 'object',
+          properties: {
+            id: {
+              type: 'integer',
+              description: 'User ID'
+            },
+            email: {
+              type: 'string',
+              description: 'User email'
+            },
+            username: {
+              type: 'string',
+              description: 'Username'
+            },
+            is_admin: {
+              type: 'integer',
+              enum: [0, 1],
+              description: 'Admin status (0: regular user, 1: admin)'
+            }
+          }
+        },
+        Error: {
+          type: 'object',
+          properties: {
+            error: {
+              type: 'string',
+              description: 'Error message'
+            }
+          }
+        }
+      }
     }
   },
   apis: [
-//    './modules/swagger-docs/admin.js',
-//    './modules/swagger-docs/auth.js',
-//    './modules/swagger-docs/user.js',
-//    './server.js',
-    './modules/swagger-docs/full-api.js'
+    './modules/swagger-docs/admin.js',
+    './modules/swagger-docs/auth.js',
+    './modules/swagger-docs/user.js',
+    './server.js',
   ]
 };
 
