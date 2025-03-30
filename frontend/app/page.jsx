@@ -6,6 +6,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import AuthGuard from '@/components/AuthGuard';
 import ChatForm from '@/components/ChatForm';
 import CodeDisplay from '@/components/CodeDisplay';
+import WarningRibbon from '@/components/WarningRibbon';
 
 export default function Home() {
   const { user, requestCount, logout, isAdmin } = useAuth();
@@ -41,6 +42,12 @@ export default function Home() {
             </button>
           </div>
         </div>
+
+        {requestCount >= 20 && (
+          <WarningRibbon 
+            message="You have reached 20 requests. You are now a true 10x Developer!"
+          />
+        )}
 
         <ChatForm onCodeGenerated={handleCodeGenerated} />
         
