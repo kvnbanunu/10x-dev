@@ -6,6 +6,7 @@ import 'dotenv/config';
 import { initDB } from './modules/database.js';
 import { authMiddleware, errorHandler, reqLogger, validateRequest, validationSchemas } from './modules/middleware.js';
 import { handlers } from './modules/handlers.js';
+import { setupSwagger } from './modules/swagger.js';
 
 await initDB();
 
@@ -20,6 +21,30 @@ app.use(cors({
 app.use(express.json());
 app.use(cookieParser());
 app.use(reqLogger);
+
+setupSwagger(app);
+
+/**
+ * @swagger
+ * /:
+ *   get:
+ *     summary: API health check
+ *     description: Returns API status
+ *     responses:
+ *       200:
+ *         description: API is running
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: API running
+ */
+app.get('/', (req, res) => {
+    res.status(200).json({ status: 'API running' });
+});
 
 app.post('/register', validateRequest(validationSchemas.register), handlers.register);
 app.post('/login', validateRequest(validationSchemas.login), handlers.login);
