@@ -184,17 +184,35 @@ export const handlers = {
         return res.status(403).json({ error: errMsg.admin });
       }
 //      const { users, requests } = await sql.getDatabase();
-      
-      const users = await sql.fetchAll(`
-        SELECT users.id, users.email, users.username, users.is_admin, COUNT(DISTINCT requests.id) AS request_count, COUNT(DISTINCT api_requests.id) AS api_request_count
+      const usersWithCodeRequests = await sql.fetchAll(`
+        SELECT 
+          users.id, 
+          users.email, 
+          users.username, 
+          users.is_admin, 
+        COUNT(requests.id) AS request_count
         FROM users
         LEFT JOIN requests ON users.id = requests.user_id
-        LEFT JOIN api_requests ON users.id = api_requests.user_id
         GROUP BY users.id
       `);
 
-      const requests = await sql.fetchAll('SELECT * FROM requests ORDER BY timestamp DESC');
+      const apiRequestCounts = await sql.fetchAll(`
+        SELECT 
+          user_id, 
+          COUNT(*) AS api_request_count
+        FROM api_requests
+        GROUP BY user_id
+      `);
 
+      const users = usersWithCodeRequests.map(user => {
+        const apiData = apiRequestCounts.find(item => item.user_id === user.id);
+        return {
+          ...user,
+          api_request_count: apiData ? apiData.api_request_count : 0
+        };
+      });
+
+      const requests = await sql.fetchAll('SELECT * FROM requests ORDER BY timestamp DESC');
       const apiUsage = await sql.getApiRequestsSummary();
 
       return res.json({ users, requests, apiUsage });
