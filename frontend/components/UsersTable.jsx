@@ -110,6 +110,9 @@ export default function UsersTable({ users, onUserUpdated, onUserDeleted }) {
                     <td className="px-6 py-4 whitespace-nowrap text-sm">
                       {user.request_count}
                     </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm">
+                      {user.api_request_count}
+                    </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-right">
                       {confirmDelete === user.id ? (
                         <div className="flex space-x-2">

@@ -107,10 +107,18 @@ const getRequestCountByUser = async (userId) => {
 
 const getDatabase = async () => {
   const users = await fetchAll(`
-SELECT users.id, users.email, users.username, users.is_admin, COUNT(requests.id) AS request_count FROM users
-LEFT JOIN requests ON users.id = requests.user_id
-GROUP BY users.id
-`);
+      SELECT
+        users.id,
+        users.email,
+        users.username,
+        users.is_admin,
+        COUNT(DISTINCT requests.id) AS request_count,
+        COUNT(DISTINCT api_requests.id) AS api_request_count
+      FROM users
+      LEFT JOIN requests ON users.id = requests.user_id
+      LEFT JOIN api_requests ON users.id = api_requests.user_id
+      GROUP BY users.id
+  `);
   const requests = await fetchAll('SELECT * FROM requests ORDER BY timestamp DESC');
   return { users, requests };
 };
